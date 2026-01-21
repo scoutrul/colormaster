@@ -42,8 +42,9 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
   };
 
   const getCode = () => {
+    // Добавлен явный кастинг типов для Object.entries, чтобы исправить ошибку типизации (line 46)
     const formattedColors = Object.fromEntries(
-      Object.entries(tokens.colors).map(([key, val]) => [key, formatColor(val)])
+      (Object.entries(tokens.colors) as [string, string][]).map(([key, val]) => [key, formatColor(val)])
     );
 
     if (exportFormat === 'json') {
@@ -103,7 +104,8 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
         </div>
 
         <div className="grid grid-cols-1 gap-1.5">
-          {Object.entries(tokens.colors).map(([key, value]) => (
+          {/* Добавлен явный кастинг типов для Object.entries, чтобы исправить ошибку типизации (line 120) */}
+          {(Object.entries(tokens.colors) as [string, string][]).map(([key, value]) => (
             <div key={key} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100 transition-all duration-200">
               <div className="flex items-center gap-4">
                 <div 
