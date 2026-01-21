@@ -11,8 +11,7 @@ function hexToRgb(hex: string) {
   } : { r: 0, g: 0, b: 0 };
 }
 
-// Конверсия OKLCH -> RGB -> Hex
-export function oklchToHex(l: number, c: number, h: number): string {
+export function oklchToRgbRaw(l: number, c: number, h: number) {
   const hr = (h * Math.PI) / 180;
   const a = Math.cos(hr) * c;
   const b = Math.sin(hr) * c;
@@ -29,13 +28,48 @@ export function oklchToHex(l: number, c: number, h: number): string {
   let g = -1.2684380046 * l_c + 2.6097574011 * m_c - 0.3413193965 * s_c;
   let b_ = -0.0041960863 * l_c - 0.7034186147 * m_c + 1.707614701 * s_c;
 
-  const toHex = (c: number) => {
-    const clamped = Math.max(0, Math.min(1, c));
-    const val = clamped <= 0.0031308 ? 12.92 * clamped : 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055;
-    return Math.round(val * 255).toString(16).padStart(2, '0');
-  };
+  const clamp = (val: number) => Math.max(0, Math.min(1, val));
+  const transfer = (c: number) => c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
 
-  return `#${toHex(r)}${toHex(g)}${toHex(b_)}`;
+  return {
+    r: Math.round(transfer(clamp(r)) * 255),
+    g: Math.round(transfer(clamp(g)) * 255),
+    b: Math.round(transfer(clamp(b_)) * 255)
+  };
+}
+
+// Конверсия OKLCH -> RGB -> Hex
+export function oklchToHex(l: number, c: number, h: number): string {
+  const { r, g, b } = oklchToRgbRaw(l, c, h);
+  const toHex = (val: number) => val.toString(16).padStart(2, '0');
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+export function oklchToRgbString(l: number, c: number, h: number): string {
+  const { r, g, b } = oklchToRgbRaw(l, c, h);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+export function oklchToHslString(l: number, c: number, h: number): string {
+  let { r, g, b } = oklchToRgbRaw(l, c, h);
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h_hsl = 0, s, l_hsl = (max + min) / 2;
+
+  if (max === min) {
+    h_hsl = s = 0;
+  } else {
+    const d = max - min;
+    s = l_hsl > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h_hsl = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h_hsl = (b - r) / d + 2; break;
+      case b: h_hsl = (r - g) / d + 4; break;
+    }
+    h_hsl /= 6;
+  }
+
+  return `hsl(${Math.round(h_hsl * 360)}, ${Math.round(s * 100)}%, ${Math.round(l_hsl * 100)}%)`;
 }
 
 // Приблизительная конверсия RGB -> OKLCH

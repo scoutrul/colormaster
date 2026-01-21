@@ -15,8 +15,8 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
   );
 
   const secondaryHex = useMemo(() => 
-    oklchToHex(state.baseLightness, state.baseChroma, state.secondaryHue),
-    [state.baseLightness, state.baseChroma, state.secondaryHue]
+    oklchToHex(0.6, 0.15, state.secondaryHue),
+    [state.secondaryHue]
   );
   
   const headingFonts = [
@@ -26,14 +26,21 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
     'Inter', 'Roboto', 'Plus Jakarta Sans', 'Satoshi', 'IBM Plex Sans', 'Open Sans', 'Work Sans'
   ];
 
-  const handleColorPicker = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const hex = e.target.value;
-    const oklch = hexToOklch(hex);
+  const handleBaseColorPicker = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const oklch = hexToOklch(e.target.value);
     onChange({
       ...state,
       baseHue: oklch.h,
       baseChroma: oklch.c,
       baseLightness: oklch.l
+    });
+  };
+
+  const handleSecondaryColorPicker = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const oklch = hexToOklch(e.target.value);
+    onChange({
+      ...state,
+      secondaryHue: oklch.h
     });
   };
 
@@ -49,12 +56,12 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
       <section className="space-y-10">
         <div className="space-y-6">
           <label className="text-base font-bold text-slate-900 block">Основной цвет</label>
-          <div className="flex items-center gap-6 p-3 bg-slate-50 rounded-[2.5rem] border border-slate-100">
+          <div className="flex items-center gap-6 p-3 bg-slate-50 rounded-[2.5rem] border border-slate-100 transition-all hover:bg-slate-100/50">
             <div className="relative w-16 h-16 shrink-0">
               <input 
                 type="color" 
                 value={currentHex}
-                onChange={handleColorPicker}
+                onChange={handleBaseColorPicker}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
               <div 
@@ -62,7 +69,10 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
                 style={{ backgroundColor: currentHex }}
               ></div>
             </div>
-            <span className="text-lg font-bold text-slate-400 font-mono tracking-tight">{currentHex.toUpperCase()}</span>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">HEX CODE</span>
+              <span className="text-lg font-bold text-slate-600 font-mono tracking-tight">{currentHex.toUpperCase()}</span>
+            </div>
           </div>
         </div>
 
@@ -87,16 +97,6 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
               className="w-full h-2"
             />
           </div>
-          <div className="space-y-4">
-            <div className="flex justify-between text-sm font-bold text-slate-400 uppercase tracking-widest">
-              <span>Яркость</span>
-            </div>
-            <input 
-              type="range" min="0.1" max="0.9" step="0.01" value={state.baseLightness}
-              onChange={(e) => onChange({...state, baseLightness: Number(e.target.value)})}
-              className="w-full h-2"
-            />
-          </div>
         </div>
 
         {/* Секция вторичного тона */}
@@ -105,7 +105,10 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
             onClick={() => onChange({...state, useSecondaryHue: !state.useSecondaryHue})}
             className={`w-full flex items-center justify-between font-bold text-sm transition-colors ${state.useSecondaryHue ? 'text-indigo-600' : 'text-slate-400'}`}
           >
-            <span>Двухцветная схема</span>
+            <div className="flex items-center gap-3">
+               <div className={`w-2 h-2 rounded-full ${state.useSecondaryHue ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
+               <span>Двухцветная схема</span>
+            </div>
             <div className="relative">
               <div className={`w-10 h-5 rounded-full transition-colors ${state.useSecondaryHue ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
               <div className={`absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-transform ${state.useSecondaryHue ? 'translate-x-5' : 'translate-x-0'}`}></div>
@@ -113,10 +116,21 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
           </button>
 
           {state.useSecondaryHue && (
-            <div className="space-y-6 p-6 bg-slate-50 rounded-[1.5rem] border border-slate-100 animate-in fade-in slide-in-from-top-2">
-              <div className="flex items-center gap-4 mb-2">
-                <div className="w-8 h-8 rounded-lg border-2 border-white shadow-sm" style={{ backgroundColor: secondaryHex }}></div>
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Второй тон</span>
+            <div className="space-y-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100 animate-in fade-in slide-in-from-top-2">
+              <div className="flex items-center gap-6">
+                <div className="relative w-12 h-12 shrink-0">
+                   <input 
+                      type="color" 
+                      value={secondaryHex}
+                      onChange={handleSecondaryColorPicker}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                   <div className="w-full h-full rounded-xl border-2 border-white shadow-sm" style={{ backgroundColor: secondaryHex }}></div>
+                </div>
+                <div className="flex flex-col">
+                   <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">Secondary Hue</span>
+                   <span className="text-sm font-bold text-slate-500 font-mono tracking-tighter">{state.secondaryHue.toFixed(0)}° Hue</span>
+                </div>
               </div>
               <input 
                 type="range" min="0" max="360" value={state.secondaryHue}
@@ -130,7 +144,7 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
 
       {/* Шрифты */}
       <section className="space-y-10">
-        <h2 className="text-base font-bold text-slate-900">Шрифты</h2>
+        <h2 className="text-base font-bold text-slate-900">Типографика</h2>
         <div className="space-y-8">
           <div className="space-y-4">
             <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Заголовки</label>
@@ -143,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
             </select>
           </div>
           <div className="space-y-4">
-            <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Основной текст</label>
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Контент</label>
             <select 
               className="w-full h-16 px-6 bg-slate-50 border border-slate-100 rounded-[1.5rem] text-base font-bold outline-none appearance-none cursor-pointer focus:border-indigo-400 transition-colors shadow-sm"
               value={state.typography.bodyFont}
@@ -157,7 +171,7 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
 
       {/* Оформление */}
       <section className="space-y-10">
-        <h2 className="text-base font-bold text-slate-900">Тема</h2>
+        <h2 className="text-base font-bold text-slate-900">Режим отображения</h2>
         <div className="space-y-8">
           <div className="flex p-2 bg-slate-100 rounded-[1.5rem]">
             <button 
@@ -179,7 +193,7 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
               onClick={() => onChange({...state, useGradient: !state.useGradient})}
               className={`w-full flex items-center justify-between font-bold text-sm transition-colors ${state.useGradient ? 'text-indigo-600' : 'text-slate-400'}`}
             >
-              <span>Эффект градиента</span>
+              <span>Сложные градиенты</span>
               <div className="relative">
                 <div className={`w-10 h-5 rounded-full transition-colors ${state.useGradient ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
                 <div className={`absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-transform ${state.useGradient ? 'translate-x-5' : 'translate-x-0'}`}></div>
