@@ -74,8 +74,14 @@ export function oklchToHslString(l: number, c: number, h: number): string {
 
 // Приблизительная конверсия RGB -> OKLCH
 export function hexToOklch(hex: string): OKLCH {
-  const { r, g, b } = hexToRgb(hex);
+  const { r: rs, g: gs, b: bs } = hexToRgb(hex);
   
+  // Линеаризация (Inverse Transfer Function) - БЕЗ ЭТОГО ЦВЕТА "ПЛЫВУТ"
+  const linearize = (c: number) => c > 0.04045 ? Math.pow((c + 0.055) / 1.055, 2.4) : c / 12.92;
+  const r = linearize(rs);
+  const g = linearize(gs);
+  const b = linearize(bs);
+
   const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
   const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073970037 * b;
   const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;

@@ -37,22 +37,31 @@ export interface DesignTokens {
 }
 
 export interface EditableContent {
+  brandName: string;
+  navLink1: string;
+  navLink2: string;
   heroTag: string;
   heroTitle: string;
   heroSubtitle: string;
+  heroButtonText: string;
+  card1Tag: string;
   card1Title: string;
   card1Text: string;
+  card2Tag: string;
   card2Title: string;
   card2Text: string;
+  card3Tag: string;
   card3Title: string;
   card3Text: string;
-  footerText: string;
-  // Article fields
+  articleTag: string;
   articleTitle: string;
   articleLead: string;
   articleBody: string;
+  articleBody2: string;
   articleQuote: string;
   articleAuthor: string;
+  articleButtonText: string;
+  footerText: string;
 }
 
 export interface AppState {
@@ -68,4 +77,5 @@ export interface AppState {
   secondaryHue: number;
   typography: TypographyConfig;
   content: EditableContent;
+  contrastMultiplier: number; // New: factor to scale target contrast ratios
 }

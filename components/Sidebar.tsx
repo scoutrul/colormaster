@@ -1,5 +1,5 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { AppState } from '../types';
 import { hexToOklch, oklchToHex } from '../utils/colorMath';
 
@@ -14,6 +14,12 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
     [state.baseLightness, state.baseChroma, state.baseHue]
   );
 
+  const [inputValue, setInputValue] = useState(currentHex.toUpperCase());
+
+  useEffect(() => {
+    setInputValue(currentHex.toUpperCase());
+  }, [currentHex]);
+
   const secondaryHex = useMemo(() => 
     oklchToHex(0.6, 0.15, state.secondaryHue),
     [state.secondaryHue]
@@ -27,13 +33,28 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
   ];
 
   const handleBaseColorPicker = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const oklch = hexToOklch(e.target.value);
+    const hex = e.target.value;
+    const oklch = hexToOklch(hex);
     onChange({
       ...state,
       baseHue: oklch.h,
       baseChroma: oklch.c,
       baseLightness: oklch.l
     });
+  };
+
+  const handleHexInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setInputValue(val);
+    if (/^#[0-9A-F]{6}$/i.test(val)) {
+      const oklch = hexToOklch(val);
+      onChange({
+        ...state,
+        baseHue: oklch.h,
+        baseChroma: oklch.c,
+        baseLightness: oklch.l
+      });
+    }
   };
 
   const handleSecondaryColorPicker = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,9 +90,15 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
                 style={{ backgroundColor: currentHex }}
               ></div>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1 pr-4">
               <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">HEX CODE</span>
-              <span className="text-lg font-bold text-slate-600 font-mono tracking-tight">{currentHex.toUpperCase()}</span>
+              <input 
+                type="text"
+                value={inputValue}
+                onChange={handleHexInput}
+                className="bg-transparent text-lg font-bold text-slate-600 font-mono tracking-tight outline-none focus:text-indigo-600 transition-colors w-full"
+                spellCheck={false}
+              />
             </div>
           </div>
         </div>
@@ -166,6 +193,22 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
               {bodyFonts.sort().map(f => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
+        </div>
+      </section>
+
+      {/* Контраст текста */}
+      <section className="space-y-10">
+        <h2 className="text-base font-bold text-slate-900">Контраст текста</h2>
+        <div className="space-y-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+          <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <span>Мягкий</span>
+            <span>Интенсивный</span>
+          </div>
+          <input 
+            type="range" min="0.7" max="1.5" step="0.05" value={state.contrastMultiplier}
+            onChange={(e) => onChange({...state, contrastMultiplier: Number(e.target.value)})}
+            className="w-full h-1.5"
+          />
         </div>
       </section>
 

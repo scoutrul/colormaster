@@ -38,11 +38,17 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
           <nav className="flex justify-between items-center mb-24">
             <div className="flex items-center gap-2">
                <div className="w-8 h-8 rounded-full shadow-lg" style={{ backgroundColor: colors.accentPrimary }}></div>
-               <Heading level="m" tokens={tokens} tag="span" style={{ fontSize: '1.25rem' }}>VISION</Heading>
+               <Heading level="m" tokens={tokens} tag="span" style={{ fontSize: '1.25rem' }}>
+                  <Editable value={content.brandName} field="brandName" onBlur={onContentChange} />
+               </Heading>
             </div>
-            <div className="flex gap-10">
-              <Text tokens={tokens} variant="secondary" className="font-bold uppercase text-[11px] tracking-widest">Метод</Text>
-              <Button tokens={tokens} variant="outline" className="!px-6 !py-2 !rounded-full" isDark={isDark}>Обсудить</Button>
+            <div className="flex gap-10 items-center">
+              <Text tokens={tokens} variant="secondary" className="font-bold uppercase text-[11px] tracking-widest">
+                <Editable value={content.navLink1} field="navLink1" onBlur={onContentChange} />
+              </Text>
+              <Button tokens={tokens} variant="outline" className="!px-6 !py-2 !rounded-full" isDark={isDark}>
+                <Editable value={content.navLink2} field="navLink2" onBlur={onContentChange} />
+              </Button>
             </div>
           </nav>
 
@@ -63,7 +69,9 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
             </Text>
             
             <div className="pt-10">
-              <Button tokens={tokens} isDark={isDark} className="px-12 py-5 !rounded-2xl shadow-2xl">Заказать ретрит</Button>
+              <Button tokens={tokens} isDark={isDark} className="px-12 py-5 !rounded-2xl shadow-2xl">
+                <Editable value={content.heroButtonText} field="heroButtonText" onBlur={onContentChange} />
+              </Button>
             </div>
           </header>
         </div>
@@ -76,7 +84,9 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
             {[1, 2, 3].map(i => (
               <Card key={i} tokens={tokens} isDark={isDark} className="space-y-8">
                 <div className="flex justify-between items-start">
-                   <Tag tokens={tokens} active>{i === 1 ? '1 день' : i === 2 ? '4-6 часов' : '2-3 дня'}</Tag>
+                   <Tag tokens={tokens} active>
+                      <Editable value={content[`card${i}Tag` as keyof typeof content]} field={`card${i}Tag`} onBlur={onContentChange} />
+                   </Tag>
                    <span className="text-6xl font-black opacity-10" style={{ color: colors.textMuted }}>0{i}</span>
                 </div>
                 <div className="space-y-4">
@@ -97,7 +107,9 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
       <div className="w-full py-32 px-12 flex justify-center" style={{ backgroundColor: colors.bgPrimary }}>
         <article className="max-w-3xl w-full space-y-12">
           <div className="space-y-6">
-            <Tag tokens={tokens} active>Insight</Tag>
+            <Tag tokens={tokens} active>
+              <Editable value={content.articleTag} field="articleTag" onBlur={onContentChange} />
+            </Tag>
             <Heading level="m" tokens={tokens} tag="h2" style={{ fontSize: '3.5rem' }}>
               <Editable value={content.articleTitle} field="articleTitle" onBlur={onContentChange} />
             </Heading>
@@ -121,13 +133,15 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
           </Blockquote>
 
           <Text tokens={tokens}>
-            Практика глубокой работы требует дисциплины и системного подхода к дизайну собственного окружения. Когда мы минимизируем визуальный шум, наш мозг освобождает ресурсы для решения сложных задач.
+            <Editable value={content.articleBody2} field="articleBody2" onBlur={onContentChange} />
           </Text>
 
           <Divider tokens={tokens} variant="dots" />
           
           <div className="flex justify-center">
-            <Button tokens={tokens} variant="soft" className="!px-16 !py-6 !rounded-full">Поделиться мыслями</Button>
+            <Button tokens={tokens} variant="soft" className="!px-16 !py-6 !rounded-full">
+              <Editable value={content.articleButtonText} field="articleButtonText" onBlur={onContentChange} />
+            </Button>
           </div>
         </article>
       </div>

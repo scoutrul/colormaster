@@ -19,26 +19,37 @@ const App: React.FC = () => {
     gradientAngle: 165,
     useSecondaryHue: false,
     secondaryHue: 260,
+    contrastMultiplier: 1.0,
     typography: {
       headingFont: 'Montserrat',
       bodyFont: 'Inter'
     },
     content: {
+      brandName: 'VISION',
+      navLink1: 'Метод',
+      navLink2: 'Обсудить',
       heroTag: 'ЭКСКЛЮЗИВНЫЙ ОПЫТ',
       heroTitle: 'Будущее создается\nв тишине',
       heroSubtitle: 'Проектируем глубокие трансформационные путешествия для лидеров и команд. Мы объединяем когнитивную психологию, биохакинг и силу природы для кратного роста вашего видения.',
+      heroButtonText: 'Заказать ретрит',
+      card1Tag: '1 день',
       card1Title: 'Нейробаланс',
       card1Text: 'Научные методики восстановления фокуса и снятия хронического напряжения в условиях полной неопределенности.',
+      card2Tag: '4-6 часов',
       card2Title: 'Радикальная стратегия',
       card2Text: 'Модерируемые сессии в изоляции для поиска нестандартных решений и формирования долгосрочного вектора развития.',
+      card3Tag: '2-3 дня',
       card3Title: 'Экосистема доверия',
       card3Text: 'Создание непоколебимой связи внутри коллектива через совместное преодоление барьеров и сонастройку ценностей.',
-      footerText: 'Наша миссия — превратить человеческий капитал в осознанное сообщество, способное менять реальность через инновации и внутренний покой.',
+      articleTag: 'Insight',
       articleTitle: 'Искусство глубокой фокусировки в эпоху цифрового шума',
       articleLead: 'В мире, где внимание стало самым дорогим ресурсом, способность к глубокой работе отделяет визионеров от исполнителей. Мы исследуем механизмы восстановления когнитивного ресурса.',
-      articleBody: 'Постоянные уведомления и фрагментация задач приводят к состоянию "внимательного истощения". Исследования показывают, что после каждого прерывания мозгу требуется до 23 минут, чтобы вернуться к состоянию глубокого потока. Мы разработали систему архитектурной тишины, которая позволяет мозгу переключиться из режима "выживания" в режим "созидания". Этот процесс требует не просто отсутствия звука, но правильной визуальной и сенсорной среды.',
+      articleBody: 'Постоянные уведомления и фрагментация задач приводят к состоянию "внимательного истощения". Исследования показовуют, что после каждого прерывания мозгу требуется до 23 минут, чтобы вернуться к состоянию глубокого потока. Мы разработали систему архитектурной тишины, которая позволяет мозгу переключиться из режима "выживания" в режим "созидания". Этот процесс требует не просто отсутствия звука, но правильной визуальной и сенсорной среды.',
+      articleBody2: 'Практика глубокой работы требует дисциплины и системного подхода к дизайну собственного окружения. Когда мы минимизируем визуальный шум, наш мозг освобождает ресурсы для решения сложных задач.',
       articleQuote: 'Тишина — это не пустота. Это пространство, где рождаются ответы, которые не слышны в суете.',
-      articleAuthor: 'Марк Оливер, PhD'
+      articleAuthor: 'Марк Оливер, PhD',
+      articleButtonText: 'Поделиться мыслями',
+      footerText: 'Наша миссия — превратить человеческий капитал в осознанное сообщество, способное менять реальность через инновации и внутренний покой.'
     }
   });
 
@@ -67,7 +78,7 @@ const App: React.FC = () => {
   const updateContent = (key: string, value: string) => {
     setState(prev => ({
       ...prev,
-      content: { ...prev.content, [key]: value }
+      content: { ...prev.content, [key as keyof typeof prev.content]: value }
     }));
   };
 
@@ -80,27 +91,22 @@ const App: React.FC = () => {
             <Preview tokens={tokens} config={state} onContentChange={updateContent} />
          </div>
 
-         {/* Понятная кнопка экспорта */}
-         <button 
-           onClick={() => setIsTokenPanelOpen(true)}
-           className="absolute top-12 right-12 z-40 bg-slate-900 text-white px-8 py-4 rounded-[1.5rem] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 font-black text-xs tracking-widest uppercase"
-         >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            Получить код
-         </button>
+         {!isTokenPanelOpen && (
+           <button 
+             onClick={() => setIsTokenPanelOpen(true)}
+             className="absolute top-12 right-12 z-[60] px-8 py-4 rounded-[1.5rem] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 font-black text-xs tracking-widest uppercase bg-slate-900 text-white"
+           >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Получить код
+           </button>
+         )}
       </main>
-
-      {isTokenPanelOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-900/30 backdrop-blur-md z-40 transition-opacity"
-          onClick={() => setIsTokenPanelOpen(false)}
-        ></div>
-      )}
 
       <TokenPanel 
         tokens={tokens} 
+        config={state}
         isOpen={isTokenPanelOpen} 
         onClose={() => setIsTokenPanelOpen(false)} 
       />

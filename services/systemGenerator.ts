@@ -12,7 +12,8 @@ export function generateSystem(state: AppState): DesignTokens {
     typography, 
     gradientIntensity,
     useSecondaryHue,
-    secondaryHue
+    secondaryHue,
+    contrastMultiplier = 1.0
   } = state;
   const isDark = mode === 'dark';
 
@@ -39,7 +40,6 @@ export function generateSystem(state: AppState): DesignTokens {
   const bgPrimary = { l: bgL, c: bgC, h: baseHue };
   
   // Слои фона (Elevation)
-  // В темной теме мы жестко ограничиваем рост яркости, чтобы не "съесть" контраст текста
   const stepL = isDark ? 0.05 : 0.04;
   const targetHue = useSecondaryHue ? secondaryHue : baseHue;
   const intensityShift = (gradientIntensity / 100) * 0.03;
@@ -61,13 +61,18 @@ export function generateSystem(state: AppState): DesignTokens {
   };
 
   // Расчет контраста текста
-  // В темной теме берем bgTertiary как самый опасный (светлый) фон для белого текста
-  const contrastRefL = isDark ? bgTertiary.l : bgPrimary.l;
+  const contrastRefL = bgPrimary.l;
 
-  const textHeadingL = findLForContrast(isDark ? 11 : 10, contrastRefL, baseHue, bgC, isDark);
-  const textPrimaryL = findLForContrast(isDark ? 8 : 7, contrastRefL, baseHue, bgC, isDark);
-  const textSecondaryL = findLForContrast(isDark ? 5.5 : 4.5, contrastRefL, baseHue, bgC, isDark);
-  const textMutedL = findLForContrast(isDark ? 4 : 3, contrastRefL, baseHue, bgC, isDark);
+  /**
+   * Мы снижаем базовые значения целевого контраста для светлой темы.
+   * Раньше Heading был 7.0, что в светлой теме почти всегда давало черный.
+   * Теперь базовый 5.5. При множителе 0.7 (Soft) мы получим ~3.8 (средне-серый),
+   * а при 1.5 (Intense) — ~8.2 (глубокий черный).
+   */
+  const textHeadingL = findLForContrast((isDark ? 9.0 : 5.5) * contrastMultiplier, contrastRefL, baseHue, bgC, isDark);
+  const textPrimaryL = findLForContrast((isDark ? 6.5 : 4.5) * contrastMultiplier, contrastRefL, baseHue, bgC, isDark);
+  const textSecondaryL = findLForContrast((isDark ? 4.5 : 3.0) * contrastMultiplier, contrastRefL, baseHue, bgC, isDark);
+  const textMutedL = findLForContrast((isDark ? 3.0 : 2.0) * contrastMultiplier, contrastRefL, baseHue, bgC, isDark);
 
   const accentPrimary = { l: accentL, c: accentC, h: baseHue };
   const accentHover = { ...accentPrimary, l: isDark ? Math.min(accentL + 0.1, 0.95) : Math.max(accentL - 0.1, 0.15) };
