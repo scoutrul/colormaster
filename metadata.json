@@ -1,0 +1,5 @@
+{
+  "name": "Vision System Architect",
+  "description": "MVP для автоматической генерации визуальных систем на основе правил контраста и цветовых ролей.",
+  "requestFramePermissions": []
+}
