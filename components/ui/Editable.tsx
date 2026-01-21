@@ -14,7 +14,7 @@ const Editable: React.FC<EditableProps> = ({ value, field, onBlur, className = '
       contentEditable
       suppressContentEditableWarning
       onBlur={(e: any) => onBlur(field, e.target.innerText)}
-      className={`outline-none focus:ring-2 focus:ring-offset-4 focus:ring-indigo-500 rounded px-1 -mx-1 transition-all inline-block ${className}`}
+      className={`outline-none focus:ring-2 focus:ring-offset-4 focus:ring-indigo-500 rounded px-1 -mx-1 transition-all inline-block whitespace-pre-wrap ${className}`}
     >
       {value}
     </span>

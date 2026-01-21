@@ -9,20 +9,21 @@ import { generateSystem } from './services/systemGenerator';
 const App: React.FC = () => {
   const [isTokenPanelOpen, setIsTokenPanelOpen] = useState(false);
   const [state, setState] = useState<AppState>({
-    baseHue: 220,
-    baseChroma: 0.15,
+    baseHue: 205,
+    baseChroma: 0.1,
     baseLightness: 0.6,
     baseRole: 'accent',
     mode: 'light',
     useGradient: true,
-    gradientIntensity: 25,
+    gradientIntensity: 30,
     gradientAngle: 165,
     useSecondaryHue: false,
     secondaryHue: 260,
     contrastMultiplier: 1.0,
     typography: {
-      headingFont: 'Montserrat',
-      bodyFont: 'Inter'
+      bodyFont: 'Manrope',      
+      editorialFont: 'Spectral', 
+      displayFont: 'Unbounded'  
     },
     content: {
       brandName: 'VISION',
@@ -30,32 +31,37 @@ const App: React.FC = () => {
       navLink2: 'Обсудить',
       heroTag: 'ЭКСКЛЮЗИВНЫЙ ОПЫТ',
       heroTitle: 'Будущее создается\nв тишине',
-      heroSubtitle: 'Проектируем глубокие трансформационные путешествия для лидеров и команд. Мы объединяем когнитивную психологию, биохакинг и силу природы для кратного роста вашего видения.',
+      heroSubtitle: 'Проектируем глубокие трансформационные путешествия для лидеров и команд. Мы объединяем когнитивную психологию и биохакинг для кратного роста вашего видения.',
       heroButtonText: 'Заказать ретрит',
       card1Tag: '1 день',
+      card1Number: '01',
       card1Title: 'Нейробаланс',
-      card1Text: 'Научные методики восстановления фокуса и снятия хронического напряжения в условиях полной неопределенности.',
+      card1Text: 'Научные методики восстановления фокуса и снятия хронического напряжения в условиях неопределенности.',
       card2Tag: '4-6 часов',
+      card2Number: '02',
       card2Title: 'Радикальная стратегия',
-      card2Text: 'Модерируемые сессии в изоляции для поиска нестандартных решений и формирования долгосрочного вектора развития.',
+      card2Text: 'Модерируемые сессии в изоляции для поиска нестандартных решений и формирования вектора развития.',
       card3Tag: '2-3 дня',
+      card3Number: '03',
       card3Title: 'Экосистема доверия',
-      card3Text: 'Создание непоколебимой связи внутри коллектива через совместное преодоление барьеров и сонастройку ценностей.',
-      articleTag: 'Insight',
-      articleTitle: 'Искусство глубокой фокусировки в эпоху цифрового шума',
-      articleLead: 'В мире, где внимание стало самым дорогим ресурсом, способность к глубокой работе отделяет визионеров от исполнителей. Мы исследуем механизмы восстановления когнитивного ресурса.',
-      articleBody: 'Постоянные уведомления и фрагментация задач приводят к состоянию "внимательного истощения". Исследования показовуют, что после каждого прерывания мозгу требуется до 23 минут, чтобы вернуться к состоянию глубокого потока. Мы разработали систему архитектурной тишины, которая позволяет мозгу переключиться из режима "выживания" в режим "созидания". Этот процесс требует не просто отсутствия звука, но правильной визуальной и сенсорной среды.',
-      articleBody2: 'Практика глубокой работы требует дисциплины и системного подхода к дизайну собственного окружения. Когда мы минимизируем визуальный шум, наш мозг освобождает ресурсы для решения сложных задач.',
-      articleQuote: 'Тишина — это не пустота. Это пространство, где рождаются ответы, которые не слышны в суете.',
+      card3Text: 'Создание непоколебимой связи внутри коллектива через совместное преодоление барьеров и сонастройку.',
+      articleTag: 'Editorial Insight',
+      articleTitle: 'Искусство глубокой фокусировки',
+      articleLead: 'В мире, где внимание стало самым дорогим ресурсом, способность к глубокой работе отделяет визионеров.',
+      articleBody: 'Постоянные уведомления и фрагментация задач приводят к состоянию "внимательного истощения". Исследования показывают, что после каждого прерывания мозгу требуется до 23 минут, чтобы вернуться к потоку.',
+      articleBody2: 'Практика глубокой работы требует дисциплины и системного подхода к дизайну собственного окружения. Когда мы минимизируем визуальный шум, наш мозг освобождает ресурсы для созидания.',
+      articleQuote: 'Тишина — это не пустота. Это пространство, где рождаются ответы.',
       articleAuthor: 'Марк Оливер, PhD',
-      articleButtonText: 'Поделиться мыслями',
-      footerText: 'Наша миссия — превратить человеческий капитал в осознанное сообщество, способное менять реальность через инновации и внутренний покой.'
+      articleButtonText: 'Связаться с автором',
+      footerText: 'Превращаем человеческий капитал в осознанное сообщество.',
+      displaySectionTitle: 'FOCUS\nENERGY\nFLOW',
+      displaySectionSubtitle: 'Экспериментальная лаборатория смыслов и трансформаций',
+      displayBgText: 'TRANSFORM'
     }
   });
 
   const tokens = useMemo(() => generateSystem(state), [state]);
 
-  // Динамическая загрузка шрифтов Google Fonts
   useEffect(() => {
     const linkId = 'dynamic-google-fonts';
     let link = document.getElementById(linkId) as HTMLLinkElement;
@@ -67,10 +73,16 @@ const App: React.FC = () => {
       document.head.appendChild(link);
     }
 
-    const headingFont = state.typography.headingFont.replace(/\s+/g, '+');
-    const bodyFont = state.typography.bodyFont.replace(/\s+/g, '+');
+    const { bodyFont, editorialFont, displayFont } = state.typography;
     
-    const url = `https://fonts.googleapis.com/css2?family=${headingFont}:wght@700;800;900&family=${bodyFont}:wght@400;500;600&display=swap`;
+    // Формируем URL для Google Fonts с поддержкой всех необходимых весов и кириллицы
+    const fontConfigs = [
+      `${bodyFont.replace(/\s+/g, '+')}:wght@400;700;800`,
+      `${editorialFont.replace(/\s+/g, '+')}:ital,wght@0,400;0,700;1,400`,
+      `${displayFont.replace(/\s+/g, '+')}:wght@400;700;900`
+    ];
+
+    const url = `https://fonts.googleapis.com/css2?${fontConfigs.map(f => `family=${f}`).join('&')}&display=swap`;
     
     link.href = url;
   }, [state.typography]);
@@ -78,38 +90,27 @@ const App: React.FC = () => {
   const updateContent = (key: string, value: string) => {
     setState(prev => ({
       ...prev,
-      content: { ...prev.content, [key as keyof typeof prev.content]: value }
+      content: { ...prev.content, [key as keyof AppState['content']]: value }
     }));
   };
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden text-slate-900 relative font-sans">
       <Sidebar state={state} onChange={setState} />
-      
       <main className="flex-1 relative overflow-hidden bg-slate-50 p-6">
          <div className="w-full h-full rounded-[3rem] shadow-2xl overflow-hidden bg-white border border-slate-200">
             <Preview tokens={tokens} config={state} onContentChange={updateContent} />
          </div>
-
          {!isTokenPanelOpen && (
            <button 
              onClick={() => setIsTokenPanelOpen(true)}
              className="absolute top-12 right-12 z-[60] px-8 py-4 rounded-[1.5rem] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 font-black text-xs tracking-widest uppercase bg-slate-900 text-white"
            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
               Получить код
            </button>
          )}
       </main>
-
-      <TokenPanel 
-        tokens={tokens} 
-        config={state}
-        isOpen={isTokenPanelOpen} 
-        onClose={() => setIsTokenPanelOpen(false)} 
-      />
+      <TokenPanel tokens={tokens} config={state} isOpen={isTokenPanelOpen} onClose={() => setIsTokenPanelOpen(false)} />
     </div>
   );
 };

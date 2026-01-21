@@ -58,8 +58,9 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
       css += `\n  --bg-gradient: linear-gradient(${config.gradientAngle}deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);`;
     }
 
+    // Fix: replaced non-existent headingFamily with displayFamily
     css += `\n\n  /* Типографика */\n` +
-      `  --font-heading: "${tokens.typography.headingFamily}";\n` +
+      `  --font-heading: "${tokens.typography.displayFamily}";\n` +
       `  --font-body: "${tokens.typography.bodyFamily}";\n` +
       `}`;
     
@@ -165,8 +166,7 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
             <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Просмотреть код экспорта</span>
             <svg 
               className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isCodeExpanded ? 'rotate-180' : ''}`} 
-              fill="none" viewBox="0 0 24 24" stroke="currentColor"
-            >
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
             </svg>
           </button>

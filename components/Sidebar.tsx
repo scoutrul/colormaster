@@ -20,16 +20,21 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
     setInputValue(currentHex.toUpperCase());
   }, [currentHex]);
 
-  const secondaryHex = useMemo(() => 
-    oklchToHex(0.6, 0.15, state.secondaryHue),
-    [state.secondaryHue]
-  );
+  // Группы шрифтов с полной поддержкой кириллицы
+  const bodyFonts = ['Manrope', 'Inter', 'Golos Text', 'Onest', 'Montserrat', 'Roboto', 'IBM Plex Sans'];
+  const editorialFonts = ['Spectral', 'Lora', 'Playfair Display', 'Merriweather', 'PT Serif', 'Oranienbaum'];
   
-  const headingFonts = [
-    'Montserrat', 'Playfair Display', 'Outfit', 'Clash Display', 'Manrope', 'Lora', 'Unbounded', 'Raleway', 'Jost'
-  ];
-  const bodyFonts = [
-    'Inter', 'Roboto', 'Plus Jakarta Sans', 'Satoshi', 'IBM Plex Sans', 'Open Sans', 'Work Sans'
+  // Акцентные (Display) шрифты - только кириллица + пересечения
+  const displayFonts = [
+    'Unbounded', 
+    'Dela Gothic One', 
+    'Russo One', 
+    'Rubik Mono One',
+    'Montserrat',
+    'Playfair Display',
+    'Spectral',
+    'Manrope',
+    'Comfortaa'
   ];
 
   const handleBaseColorPicker = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,219 +62,147 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
     }
   };
 
-  const handleSecondaryColorPicker = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const oklch = hexToOklch(e.target.value);
-    onChange({
-      ...state,
-      secondaryHue: oklch.h
-    });
-  };
-
   return (
-    <div className="w-[400px] bg-white h-full flex flex-col p-12 space-y-14 overflow-y-auto z-20 shadow-[30px_0_80px_-20px_rgba(0,0,0,0.04)] border-r border-slate-100">
-      {/* Лого */}
-      <div className="flex items-center gap-5 shrink-0">
-        <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-3xl italic shadow-xl">V</div>
-        <h1 className="text-2xl font-black tracking-tighter text-slate-900">Vision</h1>
+    <div className="w-[400px] bg-white h-full flex flex-col p-10 space-y-8 overflow-y-auto z-20 shadow-[30px_0_80px_-20px_rgba(0,0,0,0.04)] border-r border-slate-100 custom-scrollbar">
+      <div className="flex items-center gap-4 shrink-0 mb-4">
+        <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-2xl italic">V</div>
+        <h1 className="text-xl font-black tracking-tight text-slate-900">Vision Architect</h1>
       </div>
 
-      {/* Выбор цвета */}
-      <section className="space-y-10">
-        <div className="space-y-6">
-          <label className="text-base font-bold text-slate-900 block">Основной цвет</label>
-          <div className="flex items-center gap-6 p-3 bg-slate-50 rounded-[2.5rem] border border-slate-100 transition-all hover:bg-slate-100/50">
-            <div className="relative w-16 h-16 shrink-0">
-              <input 
-                type="color" 
-                value={currentHex}
-                onChange={handleBaseColorPicker}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
-              <div 
-                className="w-full h-full rounded-[1.25rem] border-4 border-white shadow-md transition-transform hover:scale-105" 
-                style={{ backgroundColor: currentHex }}
-              ></div>
-            </div>
-            <div className="flex flex-col flex-1 pr-4">
-              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">HEX CODE</span>
-              <input 
-                type="text"
-                value={inputValue}
-                onChange={handleHexInput}
-                className="bg-transparent text-lg font-bold text-slate-600 font-mono tracking-tight outline-none focus:text-indigo-600 transition-colors w-full"
-                spellCheck={false}
-              />
-            </div>
+      {/* 1. ЦВЕТ СИСТЕМЫ */}
+      <section className="space-y-4">
+        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block">Цвет системы</label>
+        <div className="flex items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+          <div className="relative w-14 h-14 shrink-0">
+            <input type="color" value={currentHex} onChange={handleBaseColorPicker} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+            <div className="w-full h-full rounded-xl border-4 border-white shadow-sm" style={{ backgroundColor: currentHex }}></div>
           </div>
-        </div>
-
-        <div className="space-y-10 px-1">
-          <div className="space-y-4">
-            <div className="flex justify-between text-sm font-bold text-slate-400 uppercase tracking-widest">
-              <span>Тон</span>
-            </div>
+          <div className="flex flex-col flex-1">
+            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">HEX</span>
             <input 
-              type="range" min="0" max="360" value={state.baseHue}
-              onChange={(e) => onChange({...state, baseHue: Number(e.target.value)})}
-              className="w-full h-2"
+              type="text" 
+              value={inputValue} 
+              onChange={handleHexInput} 
+              className="bg-transparent text-base font-bold text-slate-700 font-mono tracking-tight outline-none w-full uppercase" 
             />
           </div>
-          <div className="space-y-4">
-            <div className="flex justify-between text-sm font-bold text-slate-400 uppercase tracking-widest">
-              <span>Насыщенность</span>
-            </div>
-            <input 
-              type="range" min="0" max="0.37" step="0.01" value={state.baseChroma}
-              onChange={(e) => onChange({...state, baseChroma: Number(e.target.value)})}
-              className="w-full h-2"
-            />
-          </div>
-        </div>
-
-        {/* Секция вторичного тона */}
-        <div className="space-y-6 pt-4 border-t border-slate-100">
-          <button 
-            onClick={() => onChange({...state, useSecondaryHue: !state.useSecondaryHue})}
-            className={`w-full flex items-center justify-between font-bold text-sm transition-colors ${state.useSecondaryHue ? 'text-indigo-600' : 'text-slate-400'}`}
-          >
-            <div className="flex items-center gap-3">
-               <div className={`w-2 h-2 rounded-full ${state.useSecondaryHue ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
-               <span>Двухцветная схема</span>
-            </div>
-            <div className="relative">
-              <div className={`w-10 h-5 rounded-full transition-colors ${state.useSecondaryHue ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
-              <div className={`absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-transform ${state.useSecondaryHue ? 'translate-x-5' : 'translate-x-0'}`}></div>
-            </div>
-          </button>
-
-          {state.useSecondaryHue && (
-            <div className="space-y-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100 animate-in fade-in slide-in-from-top-2">
-              <div className="flex items-center gap-6">
-                <div className="relative w-12 h-12 shrink-0">
-                   <input 
-                      type="color" 
-                      value={secondaryHex}
-                      onChange={handleSecondaryColorPicker}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                    />
-                   <div className="w-full h-full rounded-xl border-2 border-white shadow-sm" style={{ backgroundColor: secondaryHex }}></div>
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">Secondary Hue</span>
-                   <span className="text-sm font-bold text-slate-500 font-mono tracking-tighter">{state.secondaryHue.toFixed(0)}° Hue</span>
-                </div>
-              </div>
-              <input 
-                type="range" min="0" max="360" value={state.secondaryHue}
-                onChange={(e) => onChange({...state, secondaryHue: Number(e.target.value)})}
-                className="w-full h-1.5"
-              />
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Шрифты */}
-      <section className="space-y-10">
-        <h2 className="text-base font-bold text-slate-900">Типографика</h2>
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Заголовки</label>
-            <select 
-              className="w-full h-16 px-6 bg-slate-50 border border-slate-100 rounded-[1.5rem] text-base font-bold outline-none appearance-none cursor-pointer focus:border-indigo-400 transition-colors shadow-sm"
-              value={state.typography.headingFont}
-              onChange={(e) => onChange({...state, typography: {...state.typography, headingFont: e.target.value}})}
+      {/* 2. РЕЖИМ И КОНТРАСТ */}
+      <section className="space-y-6 pt-2 border-t border-slate-50">
+        <div className="space-y-4">
+          <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block">Режим</label>
+          <div className="flex p-1 bg-slate-100 rounded-xl">
+            <button 
+              onClick={() => onChange({...state, mode: 'light'})} 
+              className={`flex-1 py-2.5 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${state.mode === 'light' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
             >
-              {headingFonts.sort().map(f => <option key={f} value={f}>{f}</option>)}
-            </select>
+              Светлая
+            </button>
+            <button 
+              onClick={() => onChange({...state, mode: 'dark'})} 
+              className={`flex-1 py-2.5 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${state.mode === 'dark' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              Темная
+            </button>
           </div>
-          <div className="space-y-4">
-            <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Контент</label>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex justify-between items-end">
+            <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Контрастность</span>
+            <span className="text-xs font-bold text-slate-900">{Math.round(state.contrastMultiplier * 100)}%</span>
+          </div>
+          <input 
+            type="range" min="0.8" max="1.4" step="0.05" value={state.contrastMultiplier}
+            onChange={(e) => onChange({...state, contrastMultiplier: Number(e.target.value)})}
+            className="w-full"
+          />
+        </div>
+      </section>
+
+      {/* 3. ШРИФТЫ */}
+      <section className="space-y-6 pt-2 border-t border-slate-50">
+        <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Шрифты</h2>
+        
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <span className="text-[10px] font-bold text-slate-400 block ml-1">Текст и интерфейс</span>
             <select 
-              className="w-full h-16 px-6 bg-slate-50 border border-slate-100 rounded-[1.5rem] text-base font-bold outline-none appearance-none cursor-pointer focus:border-indigo-400 transition-colors shadow-sm"
+              className="w-full h-12 px-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none cursor-pointer hover:border-slate-300 transition-colors"
               value={state.typography.bodyFont}
               onChange={(e) => onChange({...state, typography: {...state.typography, bodyFont: e.target.value}})}
             >
               {bodyFonts.sort().map(f => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
+
+          <div className="space-y-2">
+            <span className="text-[10px] font-bold text-slate-400 block ml-1">Заголовки</span>
+            <select 
+              className="w-full h-12 px-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none cursor-pointer hover:border-slate-300 transition-colors"
+              value={state.typography.editorialFont}
+              onChange={(e) => onChange({...state, typography: {...state.typography, editorialFont: e.target.value}})}
+            >
+              {editorialFonts.sort().map(f => <option key={f} value={f}>{f}</option>)}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-[10px] font-bold text-slate-400 block ml-1">Акцентный шрифт</span>
+            <select 
+              className="w-full h-12 px-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none cursor-pointer hover:border-slate-300 transition-colors"
+              value={state.typography.displayFont}
+              onChange={(e) => onChange({...state, typography: {...state.typography, displayFont: e.target.value}})}
+            >
+              {displayFonts.map(f => <option key={f} value={f}>{f}</option>)}
+            </select>
+          </div>
         </div>
       </section>
 
-      {/* Контраст текста */}
-      <section className="space-y-10">
-        <h2 className="text-base font-bold text-slate-900">Контраст текста</h2>
-        <div className="space-y-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-          <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            <span>Мягкий</span>
-            <span>Интенсивный</span>
-          </div>
-          <input 
-            type="range" min="0.7" max="1.5" step="0.05" value={state.contrastMultiplier}
-            onChange={(e) => onChange({...state, contrastMultiplier: Number(e.target.value)})}
-            className="w-full h-1.5"
-          />
+      {/* 4. ГРАДИЕНТ ФОНА */}
+      <section className="space-y-4 pt-2 border-t border-slate-50 pb-8">
+        <div className="flex justify-between items-center">
+          <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Градиент фона</h2>
+          <button 
+            onClick={() => onChange({...state, useGradient: !state.useGradient})}
+            className={`w-10 h-5 rounded-full transition-all relative ${state.useGradient ? 'bg-indigo-500' : 'bg-slate-200'}`}
+          >
+            <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${state.useGradient ? 'left-6' : 'left-1'}`} />
+          </button>
         </div>
-      </section>
 
-      {/* Оформление */}
-      <section className="space-y-10">
-        <h2 className="text-base font-bold text-slate-900">Режим отображения</h2>
-        <div className="space-y-8">
-          <div className="flex p-2 bg-slate-100 rounded-[1.5rem]">
-            <button 
-              onClick={() => onChange({...state, mode: 'light'})}
-              className={`flex-1 py-4 text-sm font-bold rounded-xl transition-all uppercase tracking-widest ${state.mode === 'light' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400'}`}
-            >
-              Светлая
-            </button>
-            <button 
-              onClick={() => onChange({...state, mode: 'dark'})}
-              className={`flex-1 py-4 text-sm font-bold rounded-xl transition-all uppercase tracking-widest ${state.mode === 'dark' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400'}`}
-            >
-              Темная
-            </button>
-          </div>
-
-          <div className="space-y-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-            <button 
-              onClick={() => onChange({...state, useGradient: !state.useGradient})}
-              className={`w-full flex items-center justify-between font-bold text-sm transition-colors ${state.useGradient ? 'text-indigo-600' : 'text-slate-400'}`}
-            >
-              <span>Сложные градиенты</span>
-              <div className="relative">
-                <div className={`w-10 h-5 rounded-full transition-colors ${state.useGradient ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
-                <div className={`absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-transform ${state.useGradient ? 'translate-x-5' : 'translate-x-0'}`}></div>
+        {state.useGradient && (
+          <div className="space-y-6 p-5 bg-slate-50 rounded-2xl border border-slate-100 animate-in fade-in slide-in-from-top-2">
+            <div className="space-y-3">
+              <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                <span>Интенсивность</span>
+                <span className="text-slate-600 font-mono">{state.gradientIntensity}%</span>
               </div>
-            </button>
-
-            {state.useGradient && (
-              <div className="space-y-8 pt-6 border-t border-slate-200/50 animate-in fade-in slide-in-from-top-2 duration-300">
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black text-slate-300 uppercase tracking-widest block">Глубина</label>
-                  <input 
-                    type="range" min="0" max="100" value={state.gradientIntensity}
-                    onChange={(e) => onChange({...state, gradientIntensity: Number(e.target.value)})}
-                    className="w-full h-1.5"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black text-slate-300 uppercase tracking-widest block">Направление</label>
-                  <input 
-                    type="range" min="0" max="360" value={state.gradientAngle}
-                    onChange={(e) => onChange({...state, gradientAngle: Number(e.target.value)})}
-                    className="w-full h-1.5"
-                  />
-                </div>
+              <input 
+                type="range" min="0" max="100" value={state.gradientIntensity}
+                onChange={(e) => onChange({...state, gradientIntensity: Number(e.target.value)})}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                <span>Угол</span>
+                <span className="text-slate-600 font-mono">{state.gradientAngle}°</span>
               </div>
-            )}
+              <input 
+                type="range" min="0" max="360" value={state.gradientAngle}
+                onChange={(e) => onChange({...state, gradientAngle: Number(e.target.value)})}
+                className="w-full"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
-      <div className="pt-8 text-center">
-        <span className="text-[11px] font-bold text-slate-300 uppercase tracking-[0.4em]">Vision 2025</span>
-      </div>
+      <div className="flex-1"></div>
     </div>
   );
 };

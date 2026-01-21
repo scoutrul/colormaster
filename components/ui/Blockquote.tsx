@@ -19,7 +19,8 @@ const Blockquote: React.FC<BlockquoteProps> = ({ children, tokens, className = '
         style={{ 
           color: colors.textHeading, 
           fontSize: `calc(${typography.textM} * 1.3)`,
-          fontFamily: typography.headingFamily
+          // Fix: replaced non-existent headingFamily with serifFamily
+          fontFamily: typography.serifFamily
         }}
       >
         "{children}"

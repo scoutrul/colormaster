@@ -9,8 +9,9 @@ export interface OKLCH {
 }
 
 export interface TypographyConfig {
-  headingFont: string;
-  bodyFont: string;
+  bodyFont: string;      // Font A (Sans Neutral) - Body / UI
+  editorialFont: string; // Font B (Serif) - Editorial Headings
+  displayFont: string;   // Font C (Display Sans/Expressive) - Hero / Statements
 }
 
 export interface DesignTokens {
@@ -31,8 +32,9 @@ export interface DesignTokens {
     headingM: string;
     textM: string;
     textS: string;
-    headingFamily: string;
-    bodyFamily: string;
+    bodyFamily: string;      // Font A
+    serifFamily: string;     // Font B
+    displayFamily: string;   // Font C
   };
 }
 
@@ -45,12 +47,15 @@ export interface EditableContent {
   heroSubtitle: string;
   heroButtonText: string;
   card1Tag: string;
+  card1Number: string;
   card1Title: string;
   card1Text: string;
   card2Tag: string;
+  card2Number: string;
   card2Title: string;
   card2Text: string;
   card3Tag: string;
+  card3Number: string;
   card3Title: string;
   card3Text: string;
   articleTag: string;
@@ -62,6 +67,9 @@ export interface EditableContent {
   articleAuthor: string;
   articleButtonText: string;
   footerText: string;
+  displaySectionTitle: string;
+  displaySectionSubtitle: string;
+  displayBgText: string;
 }
 
 export interface AppState {
@@ -77,5 +85,5 @@ export interface AppState {
   secondaryHue: number;
   typography: TypographyConfig;
   content: EditableContent;
-  contrastMultiplier: number; // New: factor to scale target contrast ratios
+  contrastMultiplier: number;
 }
