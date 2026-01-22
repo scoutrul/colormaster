@@ -76,7 +76,6 @@ const App: React.FC = () => {
 
     const { bodyFont, editorialFont, displayFont } = state.typography;
     
-    // Показываем лоадер перед началом смены шрифтов
     setIsFontsLoading(true);
 
     const fontConfigs = [
@@ -89,10 +88,9 @@ const App: React.FC = () => {
     
     link.href = url;
 
-    // Ждем, пока браузер полностью обработает новые шрифты
     document.fonts.ready.then(() => {
-      // Небольшая задержка для плавности анимации, даже если загрузка мгновенная
-      setTimeout(() => setIsFontsLoading(false), 300);
+      // Имитируем небольшую задержку для визуального подтверждения, что процесс завершен
+      setTimeout(() => setIsFontsLoading(false), 600);
     });
   }, [state.typography]);
 
@@ -106,33 +104,33 @@ const App: React.FC = () => {
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden text-slate-900 relative font-sans">
       <Sidebar state={state} onChange={setState} />
-      <main className="flex-1 relative overflow-hidden bg-slate-50 p-6">
-         <div className="w-full h-full rounded-[3rem] shadow-2xl overflow-hidden bg-white border border-slate-200 relative">
+      
+      <main className="flex-1 relative overflow-hidden bg-slate-50 p-6 flex flex-col">
+         <div className="flex-1 rounded-[3rem] shadow-2xl overflow-hidden bg-white border border-slate-200 relative">
             
-            {/* Font Loading Overlay */}
+            {/* Minimalist Top Loader */}
+            <div 
+              className={`absolute top-0 left-0 right-0 h-[3px] z-[60] transition-opacity duration-500 ${isFontsLoading ? 'opacity-100' : 'opacity-0'}`}
+              style={{ backgroundColor: tokens.colors.accentSoft }}
+            >
+              <div 
+                className="h-full animate-[loading-bar_2s_infinite_ease-in-out]"
+                style={{ backgroundColor: tokens.colors.accentPrimary, width: '40%' }}
+              ></div>
+            </div>
+
+            {/* Subtle Text Status Indicator */}
             {isFontsLoading && (
-              <div className="absolute inset-0 z-[55] flex flex-col items-center justify-center bg-white/40 backdrop-blur-xl animate-in fade-in duration-500">
-                <div className="flex flex-col items-center gap-6">
-                  {/* High-end minimalist pulse indicator */}
-                  <div className="relative flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full border border-slate-900/10 animate-ping absolute"></div>
-                    <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black italic text-xl shadow-2xl">V</div>
-                  </div>
-                  
-                  <div className="space-y-2 text-center">
-                    <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] block animate-pulse">
-                      Syncing Typography
-                    </span>
-                    <div className="w-32 h-[1px] bg-slate-100 overflow-hidden relative rounded-full">
-                       <div className="absolute inset-0 bg-slate-900 animate-[loading-bar_1.5s_infinite_ease-in-out]"></div>
-                    </div>
-                  </div>
-                </div>
+              <div className="absolute top-8 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-slate-100 animate-in fade-in slide-in-from-top-2 flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
+                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">
+                  Обновление шрифтов
+                </span>
               </div>
             )}
 
-            {/* Main Preview */}
-            <div className={`w-full h-full transition-all duration-700 ${isFontsLoading ? 'blur-sm scale-[0.99] opacity-50' : 'blur-0 scale-100 opacity-100'}`}>
+            {/* Main Preview - Interface is now always active */}
+            <div className="w-full h-full">
               <Preview tokens={tokens} config={state} onContentChange={updateContent} />
             </div>
          </div>
@@ -146,14 +144,14 @@ const App: React.FC = () => {
            </button>
          )}
       </main>
+
       <TokenPanel tokens={tokens} config={state} isOpen={isTokenPanelOpen} onClose={() => setIsTokenPanelOpen(false)} />
       
-      {/* Keyframes for the loading bar */}
       <style>{`
         @keyframes loading-bar {
-          0% { transform: translateX(-100%); }
-          50% { transform: translateX(0); }
-          100% { transform: translateX(100%); }
+          0% { transform: translateX(-100%); width: 10%; }
+          50% { transform: translateX(100%); width: 40%; }
+          100% { transform: translateX(300%); width: 10%; }
         }
       `}</style>
     </div>
