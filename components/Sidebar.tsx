@@ -70,8 +70,10 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
       </div>
 
       {/* 1. ЦВЕТ СИСТЕМЫ */}
-      <section className="space-y-4">
+      <section className="space-y-6">
         <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block">Цвет системы</label>
+        
+        {/* HEX & Picker */}
         <div className="flex items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
           <div className="relative w-14 h-14 shrink-0">
             <input type="color" value={currentHex} onChange={handleBaseColorPicker} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
@@ -87,38 +89,66 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
             />
           </div>
         </div>
-      </section>
 
-      {/* 2. РЕЖИМ И КОНТРАСТ */}
-      <section className="space-y-6 pt-2 border-t border-slate-50">
-        <div className="space-y-4">
-          <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block">Режим</label>
-          <div className="flex p-1 bg-slate-100 rounded-xl">
-            <button 
-              onClick={() => onChange({...state, mode: 'light'})} 
-              className={`flex-1 py-2.5 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${state.mode === 'light' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
-            >
-              Светлая
-            </button>
-            <button 
-              onClick={() => onChange({...state, mode: 'dark'})} 
-              className={`flex-1 py-2.5 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${state.mode === 'dark' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
-            >
-              Темная
-            </button>
+        {/* HSL Controls (based on OKLCH) */}
+        <div className="space-y-5 px-1">
+          {/* Lightness */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <span>L (Яркость)</span>
+              <span className="text-slate-900">{Math.round(state.baseLightness * 100)}%</span>
+            </div>
+            <input 
+              type="range" min="0" max="1" step="0.01" value={state.baseLightness}
+              onChange={(e) => onChange({...state, baseLightness: Number(e.target.value)})}
+              className="w-full"
+            />
+          </div>
+
+          {/* Saturation / Chroma */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <span>S (Насыщенность)</span>
+              <span className="text-slate-900">{Math.round((state.baseChroma / 0.4) * 100)}%</span>
+            </div>
+            <input 
+              type="range" min="0" max="0.4" step="0.005" value={state.baseChroma}
+              onChange={(e) => onChange({...state, baseChroma: Number(e.target.value)})}
+              className="w-full"
+            />
+          </div>
+
+          {/* Hue */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <span>H (Тон)</span>
+              <span className="text-slate-900">{Math.round(state.baseHue)}°</span>
+            </div>
+            <input 
+              type="range" min="0" max="360" step="1" value={state.baseHue}
+              onChange={(e) => onChange({...state, baseHue: Number(e.target.value)})}
+              className="w-full"
+            />
           </div>
         </div>
+      </section>
 
-        <div className="space-y-4">
-          <div className="flex justify-between items-end">
-            <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Контрастность</span>
-            <span className="text-xs font-bold text-slate-900">{Math.round(state.contrastMultiplier * 100)}%</span>
-          </div>
-          <input 
-            type="range" min="0.8" max="1.4" step="0.05" value={state.contrastMultiplier}
-            onChange={(e) => onChange({...state, contrastMultiplier: Number(e.target.value)})}
-            className="w-full"
-          />
+      {/* 2. РЕЖИМ */}
+      <section className="space-y-4 pt-2 border-t border-slate-50">
+        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block">Режим</label>
+        <div className="flex p-1 bg-slate-100 rounded-xl">
+          <button 
+            onClick={() => onChange({...state, mode: 'light'})} 
+            className={`flex-1 py-2.5 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${state.mode === 'light' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            Светлая
+          </button>
+          <button 
+            onClick={() => onChange({...state, mode: 'dark'})} 
+            className={`flex-1 py-2.5 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${state.mode === 'dark' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            Темная
+          </button>
         </div>
       </section>
 
@@ -162,7 +192,23 @@ const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
         </div>
       </section>
 
-      {/* 4. ГРАДИЕНТ ФОНА */}
+      {/* 4. КОНТРАСТНОСТЬ */}
+      <section className="space-y-4 pt-2 border-t border-slate-50">
+        <div className="flex justify-between items-end">
+          <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block">Контрастность</label>
+          <span className="text-xs font-bold text-slate-900">{Math.round(state.contrastMultiplier * 100)}%</span>
+        </div>
+        <input 
+          type="range" min="0.8" max="1.4" step="0.05" value={state.contrastMultiplier}
+          onChange={(e) => onChange({...state, contrastMultiplier: Number(e.target.value)})}
+          className="w-full"
+        />
+        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight leading-normal px-1 opacity-70">
+          Оптимизация читаемости текста относительно фона
+        </p>
+      </section>
+
+      {/* 5. ГРАДИЕНТ ФОНА */}
       <section className="space-y-4 pt-2 border-t border-slate-50 pb-8">
         <div className="flex justify-between items-center">
           <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Градиент фона</h2>

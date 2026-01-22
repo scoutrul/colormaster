@@ -8,6 +8,7 @@ import { generateSystem } from './services/systemGenerator';
 
 const App: React.FC = () => {
   const [isTokenPanelOpen, setIsTokenPanelOpen] = useState(false);
+  const [isFontsLoading, setIsFontsLoading] = useState(false);
   const [state, setState] = useState<AppState>({
     baseHue: 205,
     baseChroma: 0.1,
@@ -75,7 +76,9 @@ const App: React.FC = () => {
 
     const { bodyFont, editorialFont, displayFont } = state.typography;
     
-    // Формируем URL для Google Fonts с поддержкой всех необходимых весов и кириллицы
+    // Показываем лоадер перед началом смены шрифтов
+    setIsFontsLoading(true);
+
     const fontConfigs = [
       `${bodyFont.replace(/\s+/g, '+')}:wght@400;700;800`,
       `${editorialFont.replace(/\s+/g, '+')}:ital,wght@0,400;0,700;1,400`,
@@ -85,6 +88,12 @@ const App: React.FC = () => {
     const url = `https://fonts.googleapis.com/css2?${fontConfigs.map(f => `family=${f}`).join('&')}&display=swap`;
     
     link.href = url;
+
+    // Ждем, пока браузер полностью обработает новые шрифты
+    document.fonts.ready.then(() => {
+      // Небольшая задержка для плавности анимации, даже если загрузка мгновенная
+      setTimeout(() => setIsFontsLoading(false), 300);
+    });
   }, [state.typography]);
 
   const updateContent = (key: string, value: string) => {
@@ -98,9 +107,36 @@ const App: React.FC = () => {
     <div className="flex h-screen bg-slate-100 overflow-hidden text-slate-900 relative font-sans">
       <Sidebar state={state} onChange={setState} />
       <main className="flex-1 relative overflow-hidden bg-slate-50 p-6">
-         <div className="w-full h-full rounded-[3rem] shadow-2xl overflow-hidden bg-white border border-slate-200">
-            <Preview tokens={tokens} config={state} onContentChange={updateContent} />
+         <div className="w-full h-full rounded-[3rem] shadow-2xl overflow-hidden bg-white border border-slate-200 relative">
+            
+            {/* Font Loading Overlay */}
+            {isFontsLoading && (
+              <div className="absolute inset-0 z-[55] flex flex-col items-center justify-center bg-white/40 backdrop-blur-xl animate-in fade-in duration-500">
+                <div className="flex flex-col items-center gap-6">
+                  {/* High-end minimalist pulse indicator */}
+                  <div className="relative flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full border border-slate-900/10 animate-ping absolute"></div>
+                    <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black italic text-xl shadow-2xl">V</div>
+                  </div>
+                  
+                  <div className="space-y-2 text-center">
+                    <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] block animate-pulse">
+                      Syncing Typography
+                    </span>
+                    <div className="w-32 h-[1px] bg-slate-100 overflow-hidden relative rounded-full">
+                       <div className="absolute inset-0 bg-slate-900 animate-[loading-bar_1.5s_infinite_ease-in-out]"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Main Preview */}
+            <div className={`w-full h-full transition-all duration-700 ${isFontsLoading ? 'blur-sm scale-[0.99] opacity-50' : 'blur-0 scale-100 opacity-100'}`}>
+              <Preview tokens={tokens} config={state} onContentChange={updateContent} />
+            </div>
          </div>
+
          {!isTokenPanelOpen && (
            <button 
              onClick={() => setIsTokenPanelOpen(true)}
@@ -111,6 +147,15 @@ const App: React.FC = () => {
          )}
       </main>
       <TokenPanel tokens={tokens} config={state} isOpen={isTokenPanelOpen} onClose={() => setIsTokenPanelOpen(false)} />
+      
+      {/* Keyframes for the loading bar */}
+      <style>{`
+        @keyframes loading-bar {
+          0% { transform: translateX(-100%); }
+          50% { transform: translateX(0); }
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
     </div>
   );
 };
