@@ -32,13 +32,13 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
       className="w-full h-full flex flex-col transition-all duration-700 overflow-y-auto scroll-smooth"
       style={{ backgroundColor: colors.bgPrimary }}
     >
-      {/* SECTION 1: VISUAL STATEMENT */}
+      {/* СЕКЦИЯ 1: ВИЗУАЛЬНОЕ ЗАЯВЛЕНИЕ */}
       <div 
         className="w-full py-64 px-12 transition-all duration-500 flex justify-center overflow-visible relative min-h-[85vh] items-center" 
         style={{ backgroundColor: colors.bgTertiary }}
       >
          <div className="max-w-6xl w-full relative">
-            {/* Background huge text */}
+            {/* Фоновый текст */}
             <div 
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[22vw] font-black opacity-[0.03] leading-none pointer-events-none whitespace-nowrap overflow-visible" 
               style={{ fontFamily: tokens.typography.displayFamily }}
@@ -46,7 +46,7 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
               <Editable value={content.displayBgText} field="displayBgText" onBlur={onContentChange} />
             </div>
             
-            {/* Main content - Tightened lineHeight for impact */}
+            {/* Основной контент */}
             <div className="flex flex-col items-center text-center space-y-16 relative z-10 overflow-visible">
                 <Heading 
                   variant="display" 
@@ -67,7 +67,7 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
          </div>
       </div>
 
-      {/* SECTION 2: HERO */}
+      {/* СЕКЦИЯ 2: ГЕРОЙ */}
       <div className="w-full transition-all duration-500 flex justify-center border-t" style={{ ...heroBgStyle, ...borderStyle }}>
         <div className="max-w-6xl w-full px-12 pt-16 pb-32">
           <nav className="flex justify-between items-center mb-24">
@@ -115,7 +115,7 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
         </div>
       </div>
 
-      {/* SECTION 3: PROGRAMS - Card titles now use Editorial font */}
+      {/* СЕКЦИЯ 3: ПРОГРАММЫ */}
       <div className="w-full py-32 px-12 transition-all duration-500 border-y flex justify-center" style={{ backgroundColor: colors.bgSecondary, ...borderStyle }}>
         <div className="max-w-6xl w-full">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -143,7 +143,7 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
         </div>
       </div>
 
-      {/* SECTION 4: ARTICLE */}
+      {/* СЕКЦИЯ 4: СТАТЬЯ */}
       <div className="w-full py-32 px-12 flex justify-center" style={{ backgroundColor: colors.bgPrimary }}>
         <article className="max-w-3xl w-full space-y-12">
           <div className="space-y-6">
@@ -185,7 +185,7 @@ const Preview: React.FC<PreviewProps> = ({ tokens, config, onContentChange }) =>
         </article>
       </div>
 
-      {/* FOOTER */}
+      {/* ФУТЕР */}
       <div className="w-full py-24 px-12 flex justify-center border-t" style={{ backgroundColor: colors.bgSecondary, ...borderStyle }}>
          <div className="max-w-4xl w-full text-center">
            <Heading variant="display" tokens={tokens} level="m" className="mb-8">

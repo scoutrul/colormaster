@@ -9,9 +9,9 @@ export interface OKLCH {
 }
 
 export interface TypographyConfig {
-  bodyFont: string;      // Font A (Sans Neutral) - Body / UI
-  editorialFont: string; // Font B (Serif) - Editorial Headings
-  displayFont: string;   // Font C (Display Sans/Expressive) - Hero / Statements
+  bodyFont: string;      // Шрифт A (Sans Neutral) - Body / UI
+  editorialFont: string; // Шрифт B (Serif) - Editorial Headings
+  displayFont: string;   // Шрифт C (Display Sans/Expressive) - Hero / Statements
 }
 
 export interface DesignTokens {

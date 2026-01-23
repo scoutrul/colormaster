@@ -42,7 +42,7 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
   };
 
   const getCode = () => {
-    // Добавлен явный кастинг типов для Object.entries, чтобы исправить ошибку типизации (line 46)
+    // Кастинг типов для Object.entries
     const formattedColors = Object.fromEntries(
       (Object.entries(tokens.colors) as [string, string][]).map(([key, val]) => [key, formatColor(val)])
     );
@@ -59,7 +59,7 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
       css += `\n  --bg-gradient: linear-gradient(${config.gradientAngle}deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);`;
     }
 
-    // Fix: replaced non-existent headingFamily with displayFamily
+    // Замена headingFamily на displayFamily
     css += `\n\n  /* Типографика */\n` +
       `  --font-heading: "${tokens.typography.displayFamily}";\n` +
       `  --font-body: "${tokens.typography.bodyFamily}";\n` +
@@ -104,7 +104,7 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
         </div>
 
         <div className="grid grid-cols-1 gap-1.5">
-          {/* Добавлен явный кастинг типов для Object.entries, чтобы исправить ошибку типизации (line 120) */}
+          {/* Кастинг типов для Object.entries */}
           {(Object.entries(tokens.colors) as [string, string][]).map(([key, value]) => (
             <div key={key} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100 transition-all duration-200">
               <div className="flex items-center gap-4">
@@ -135,8 +135,8 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
                     style={{ background: `linear-gradient(${config.gradientAngle}deg, ${tokens.colors.bgPrimary} 0%, ${tokens.colors.bgSecondary} 100%)` }}
                   ></div>
                   <div className="flex flex-col">
-                    <span className="text-[9px] font-black text-indigo-400 uppercase leading-none mb-1 tracking-widest opacity-80">GRADIENT</span>
-                    <span className="text-xs font-black text-slate-900 uppercase tracking-tighter leading-none">Background</span>
+                    <span className="text-[9px] font-black text-indigo-400 uppercase leading-none mb-1 tracking-widest opacity-80">ГРАДИЕНТ</span>
+                    <span className="text-xs font-black text-slate-900 uppercase tracking-tighter leading-none">Фон</span>
                   </div>
                 </div>
                 <div className="text-right">
@@ -148,11 +148,11 @@ const TokenPanel: React.FC<TokenPanelProps> = ({ tokens, config, isOpen, onClose
               
               <div className="grid grid-cols-2 gap-2 pt-2 border-t border-indigo-100/50">
                 <div className="flex flex-col gap-1">
-                  <span className="text-[8px] font-black text-indigo-300 uppercase tracking-widest">Start color</span>
+                  <span className="text-[8px] font-black text-indigo-300 uppercase tracking-widest">Начальный цвет</span>
                   <span className="text-[11px] font-bold text-slate-600 font-mono truncate">{formatColor(tokens.colors.bgPrimary)}</span>
                 </div>
                 <div className="flex flex-col gap-1 items-end">
-                  <span className="text-[8px] font-black text-indigo-300 uppercase tracking-widest">End color</span>
+                  <span className="text-[8px] font-black text-indigo-300 uppercase tracking-widest">Конечный цвет</span>
                   <span className="text-[11px] font-bold text-slate-600 font-mono truncate">{formatColor(tokens.colors.bgSecondary)}</span>
                 </div>
               </div>

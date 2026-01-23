@@ -26,10 +26,10 @@ const App: React.FC = () => {
       editorialFont: 'Spectral', 
       displayFont: 'Unbounded'  
     },
-    content: {
-      brandName: 'VISION',
-      navLink1: 'Метод',
-      navLink2: 'Обсудить',
+      content: {
+      brandName: 'КОНЦЕПЦИЯ',
+      navLink1: 'Методология',
+      navLink2: 'Обсуждение',
       heroTag: 'ЭКСКЛЮЗИВНЫЙ ОПЫТ',
       heroTitle: 'Будущее создается\nв тишине',
       heroSubtitle: 'Проектируем глубокие трансформационные путешествия для лидеров и команд. Мы объединяем когнитивную психологию и биохакинг для кратного роста вашего видения.',
@@ -55,9 +55,9 @@ const App: React.FC = () => {
       articleAuthor: 'Марк Оливер, PhD',
       articleButtonText: 'Связаться с автором',
       footerText: 'Превращаем человеческий капитал в осознанное сообщество.',
-      displaySectionTitle: 'FOCUS\nENERGY\nFLOW',
+      displaySectionTitle: 'Съешь\nэтих\nбулочек',
       displaySectionSubtitle: 'Экспериментальная лаборатория смыслов и трансформаций',
-      displayBgText: 'TRANSFORM'
+      displayBgText: 'СЕНЪОР ПОМИДОР'
     }
   });
 
@@ -89,7 +89,7 @@ const App: React.FC = () => {
     link.href = url;
 
     document.fonts.ready.then(() => {
-      // Имитируем небольшую задержку для визуального подтверждения, что процесс завершен
+      // Имитация задержки для визуального подтверждения
       setTimeout(() => setIsFontsLoading(false), 600);
     });
   }, [state.typography]);
@@ -108,7 +108,7 @@ const App: React.FC = () => {
       <main className="flex-1 relative overflow-hidden bg-slate-50 p-6 flex flex-col">
          <div className="flex-1 rounded-[3rem] shadow-2xl overflow-hidden bg-white border border-slate-200 relative">
             
-            {/* Minimalist Top Loader */}
+            {/* Минималистичный загрузчик */}
             <div 
               className={`absolute top-0 left-0 right-0 h-[3px] z-[60] transition-opacity duration-500 ${isFontsLoading ? 'opacity-100' : 'opacity-0'}`}
               style={{ backgroundColor: tokens.colors.accentSoft }}
@@ -119,7 +119,7 @@ const App: React.FC = () => {
               ></div>
             </div>
 
-            {/* Subtle Text Status Indicator */}
+            {/* Индикатор статуса */}
             {isFontsLoading && (
               <div className="absolute top-8 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-slate-100 animate-in fade-in slide-in-from-top-2 flex items-center gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
@@ -129,7 +129,7 @@ const App: React.FC = () => {
               </div>
             )}
 
-            {/* Main Preview - Interface is now always active */}
+            {/* Основной превью */}
             <div className="w-full h-full">
               <Preview tokens={tokens} config={state} onContentChange={updateContent} />
             </div>
